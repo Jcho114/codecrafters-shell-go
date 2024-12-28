@@ -84,21 +84,17 @@ func main() {
 		}
 
 		input = input[:len(input)-1]
+		command := strings.Split(input, " ")[0]
 
-		isValidCommand := false
-		for command, handler := range COMMAND_MAPPINGS {
-			if strings.HasPrefix(input, command) {
-				if len(input) > len(command) {
-					input = string(input[len(command)+1:])
-				} else {
-					input = ""
-				}
-				handler(input)
-				isValidCommand = true
+		if _, ok := COMMANDS[command]; ok {
+			if len(input) > len(command) {
+				input = string(input[len(command)+1:])
+			} else {
+				input = ""
 			}
-		}
-
-		if !isValidCommand {
+			handler := COMMAND_MAPPINGS[command]
+			handler(input)
+		} else {
 			fmt.Printf("%s: command not found\n", input)
 		}
 	}
