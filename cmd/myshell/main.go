@@ -5,10 +5,15 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 )
 
 func exit() {
 	os.Exit(0)
+}
+
+func echo(message string) {
+	fmt.Println(message)
 }
 
 func main() {
@@ -20,12 +25,14 @@ func main() {
 			log.Fatalf("error reading stdin")
 		}
 
-		command := input[:len(input)-1]
+		input = input[:len(input)-1]
 
-		if command == "exit 0" {
+		if input == "exit 0" {
 			exit()
+		} else if strings.HasPrefix(input, "echo") {
+			echo(input[5:])
+		} else {
+			fmt.Printf("%s: command not found\n", input)
 		}
-
-		fmt.Printf("%s: command not found\n", command)
 	}
 }
