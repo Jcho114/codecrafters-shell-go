@@ -17,16 +17,16 @@ func executeEcho(input string) {
 	fmt.Println(message)
 }
 
-var COMMANDS = map[string]bool{
-	"exit": true,
-	"echo": true,
-	"type": true,
+var COMMANDS = map[string]string{
+	"exit": "a shell builtin",
+	"echo": "a shell builtin",
+	"type": "a shell builtin",
 }
 
 func executeType(input string) {
 	command := input
-	if _, ok := COMMANDS[command]; ok {
-		fmt.Println(command, "is a shell builtin")
+	if description, ok := COMMANDS[command]; ok {
+		fmt.Printf("%s is %s\n", command, description)
 	} else {
 		fmt.Printf("%s: not found\n", command)
 	}
@@ -38,7 +38,19 @@ var COMMAND_MAPPINGS = map[string]func(string){
 	"type": executeType,
 }
 
+func initPathCommands() {
+	pathString := os.Getenv("PATH")
+	paths := strings.Split(pathString, ":")
+	for _, path := range paths {
+		split := strings.Split(path, "/")
+		command := split[len(split)-1]
+		COMMANDS[command] = path
+	}
+}
+
 func main() {
+	initPathCommands()
+
 	for {
 		fmt.Fprint(os.Stdout, "$ ")
 
