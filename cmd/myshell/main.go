@@ -8,12 +8,34 @@ import (
 	"strings"
 )
 
-func exit() {
+func executeExit(input string) {
 	os.Exit(0)
 }
 
-func echo(message string) {
+func executeEcho(input string) {
+	message := input
 	fmt.Println(message)
+}
+
+var COMMANDS = map[string]bool{
+	"exit 1": true,
+	"echo":   true,
+	"type":   true,
+}
+
+func executeType(input string) {
+	command := input
+	if _, ok := COMMANDS[command]; ok {
+		fmt.Println(command, "is a shell builtin")
+	} else {
+		fmt.Printf("%s: not found\n", command)
+	}
+}
+
+var COMMAND_MAPPINGS = map[string]func(string){
+	"exit 1": executeExit,
+	"echo":   executeEcho,
+	"type":   executeType,
 }
 
 func main() {
@@ -27,11 +49,15 @@ func main() {
 
 		input = input[:len(input)-1]
 
-		if input == "exit 0" {
-			exit()
-		} else if strings.HasPrefix(input, "echo") {
-			echo(input[5:])
-		} else {
+		isValidCommand := false
+		for command, handler := range COMMAND_MAPPINGS {
+			if strings.HasPrefix(input, command) {
+				handler(input[len(command)+1:])
+				isValidCommand = true
+			}
+		}
+
+		if !isValidCommand {
 			fmt.Printf("%s: command not found\n", input)
 		}
 	}
