@@ -9,6 +9,13 @@ import (
 	"strings"
 )
 
+var COMMAND_DESCRIPTIONS = map[string]string{
+	"exit": "a shell builtin",
+	"echo": "a shell builtin",
+	"type": "a shell builtin",
+	"pwd":  "a shell builtin",
+}
+
 func executeExit(input string) {
 	os.Exit(0)
 }
@@ -18,25 +25,28 @@ func executeEcho(input string) {
 	fmt.Println(message)
 }
 
-var COMMANDS = map[string]string{
-	"exit": "a shell builtin",
-	"echo": "a shell builtin",
-	"type": "a shell builtin",
-}
-
 func executeType(input string) {
 	command := input
-	if description, ok := COMMANDS[command]; ok {
+	if description, ok := COMMAND_DESCRIPTIONS[command]; ok {
 		fmt.Printf("%s is %s\n", command, description)
 	} else {
 		fmt.Printf("%s: not found\n", command)
 	}
 }
 
-var COMMAND_MAPPINGS = map[string]func(string){
+func executePwd(input string) {
+	currentDirectory, err := os.Getwd()
+	if err != nil {
+		log.Fatalf("error in getting current directory")
+	}
+	fmt.Println(currentDirectory)
+}
+
+var COMMAND_FUNCTIONS = map[string]func(string){
 	"exit": executeExit,
 	"echo": executeEcho,
 	"type": executeType,
+	"pwd":  executePwd,
 }
 
 func initPathCommands() {
@@ -54,12 +64,12 @@ func initPathCommands() {
 		}
 
 		for _, command := range commands {
-			if _, ok := COMMANDS[command]; ok {
+			if _, ok := COMMAND_DESCRIPTIONS[command]; ok {
 				continue
 			}
 
-			COMMANDS[command] = path + "/" + command
-			COMMAND_MAPPINGS[command] = func(input string) {
+			COMMAND_DESCRIPTIONS[command] = path + "/" + command
+			COMMAND_FUNCTIONS[command] = func(input string) {
 				cmd := exec.Command(path+"/"+command, strings.Split(input, " ")...)
 				out, err := cmd.CombinedOutput()
 				if err != nil {
@@ -90,13 +100,13 @@ func main() {
 		// Hack for passing the tests since the test executable is made after program start
 		initPathCommands()
 
-		if _, ok := COMMANDS[command]; ok {
+		if _, ok := COMMAND_DESCRIPTIONS[command]; ok {
 			if len(input) > len(command) {
 				input = string(input[len(command)+1:])
 			} else {
 				input = ""
 			}
-			handler := COMMAND_MAPPINGS[command]
+			handler := COMMAND_FUNCTIONS[command]
 			handler(input)
 		} else {
 			fmt.Printf("%s: command not found\n", input)
