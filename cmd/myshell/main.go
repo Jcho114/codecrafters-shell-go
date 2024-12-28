@@ -18,9 +18,9 @@ func executeEcho(input string) {
 }
 
 var COMMANDS = map[string]bool{
-	"exit 1": true,
-	"echo":   true,
-	"type":   true,
+	"exit": true,
+	"echo": true,
+	"type": true,
 }
 
 func executeType(input string) {
