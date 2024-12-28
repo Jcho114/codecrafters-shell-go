@@ -55,7 +55,9 @@ func initPathCommands() {
 			}
 
 			for _, command := range commands {
-				COMMANDS[command] = path + "/" + command
+				if _, ok := COMMANDS[command]; !ok {
+					COMMANDS[command] = path + "/" + command
+				}
 			}
 		}
 	}
