@@ -53,8 +53,6 @@ func initPathCommands() {
 			log.Fatalf("error listing directory")
 		}
 
-		fmt.Println("[DEBUG] - Commands:", commands)
-
 		for _, command := range commands {
 			if _, ok := COMMANDS[command]; ok {
 				continue
