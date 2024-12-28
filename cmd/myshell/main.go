@@ -42,9 +42,22 @@ func initPathCommands() {
 	pathString := os.Getenv("PATH")
 	paths := strings.Split(pathString, ":")
 	for _, path := range paths {
-		split := strings.Split(path, "/")
-		command := split[len(split)-1]
-		COMMANDS[command] = path
+		file, err := os.Open(path)
+		validPath := true
+		if err != nil {
+			validPath = false
+		}
+
+		if validPath {
+			commands, err := file.Readdirnames(0)
+			if err != nil {
+				log.Fatalf("error listing directory")
+			}
+
+			for _, command := range commands {
+				COMMANDS[command] = path + "/" + command
+			}
+		}
 	}
 }
 
