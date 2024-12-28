@@ -8,9 +8,8 @@ import (
 )
 
 func main() {
-	fmt.Fprint(os.Stdout, "$ ")
-
 	for {
+		fmt.Fprint(os.Stdout, "$ ")
 		input, err := bufio.NewReader(os.Stdin).ReadString('\n')
 		if err != nil {
 			log.Fatalf("error reading stdin")
