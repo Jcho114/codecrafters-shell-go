@@ -66,7 +66,8 @@ func initPathCommands() {
 					fmt.Println(string(out))
 					log.Fatalf("error running command %v", err)
 				}
-				fmt.Println(string(out))
+				// removed \n at the end for tests to pass
+				fmt.Println(string(out[:len(out)-1]))
 			}
 		}
 	}
