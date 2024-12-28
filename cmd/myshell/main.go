@@ -76,9 +76,6 @@ func main() {
 	initPathCommands()
 
 	for {
-		// Hack for passing the tests since the test executable is made after program start
-		initPathCommands()
-
 		fmt.Fprint(os.Stdout, "$ ")
 
 		input, err := bufio.NewReader(os.Stdin).ReadString('\n')
@@ -88,6 +85,9 @@ func main() {
 
 		input = input[:len(input)-1]
 		command := strings.Split(input, " ")[0]
+
+		// Hack for passing the tests since the test executable is made after program start
+		initPathCommands()
 
 		if _, ok := COMMANDS[command]; ok {
 			if len(input) > len(command) {
