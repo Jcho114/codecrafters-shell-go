@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"os/exec"
 	"strings"
 )
 
@@ -57,6 +58,15 @@ func initPathCommands() {
 			for _, command := range commands {
 				if _, ok := COMMANDS[command]; !ok {
 					COMMANDS[command] = path + "/" + command
+					COMMAND_MAPPINGS[command] = func(input string) {
+						cmd := exec.Command(path+"/"+command, strings.Split(input, " ")...)
+						out, err := cmd.CombinedOutput()
+						if err != nil {
+							fmt.Println(string(out))
+							log.Fatalf("error running command %v", err)
+						}
+						fmt.Println(string(out))
+					}
 				}
 			}
 		}
@@ -79,7 +89,12 @@ func main() {
 		isValidCommand := false
 		for command, handler := range COMMAND_MAPPINGS {
 			if strings.HasPrefix(input, command) {
-				handler(input[len(command)+1:])
+				if len(input) > len(command) {
+					input = string(input[len(command)+1:])
+				} else {
+					input = ""
+				}
+				handler(input)
 				isValidCommand = true
 			}
 		}
