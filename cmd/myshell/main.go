@@ -76,6 +76,9 @@ func main() {
 	initPathCommands()
 
 	for {
+		// Hack for passing the tests since the test executable is made after program start
+		initPathCommands()
+
 		fmt.Fprint(os.Stdout, "$ ")
 
 		input, err := bufio.NewReader(os.Stdin).ReadString('\n')
