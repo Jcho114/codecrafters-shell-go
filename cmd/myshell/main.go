@@ -22,7 +22,7 @@ func main() {
 
 		command := input[:len(input)-1]
 
-		if command == "exit" {
+		if command == "exit 0" {
 			exit()
 		}
 
