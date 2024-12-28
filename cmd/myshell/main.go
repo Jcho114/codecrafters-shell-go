@@ -14,6 +14,7 @@ var COMMAND_DESCRIPTIONS = map[string]string{
 	"echo": "a shell builtin",
 	"type": "a shell builtin",
 	"pwd":  "a shell builtin",
+	"cd":   "a shell builtin",
 }
 
 func executeExit(input string) {
@@ -42,11 +43,25 @@ func executePwd(input string) {
 	fmt.Println(currentDirectory)
 }
 
+func executeCd(input string) {
+	_, err := os.Stat(input)
+	if err != nil {
+		fmt.Printf("cd: %s: No such file or directory\n", input)
+		return
+	}
+
+	err = os.Chdir(input)
+	if err != nil {
+		log.Fatalf("error changing directories")
+	}
+}
+
 var COMMAND_FUNCTIONS = map[string]func(string){
 	"exit": executeExit,
 	"echo": executeEcho,
 	"type": executeType,
 	"pwd":  executePwd,
+	"cd":   executeCd,
 }
 
 func initPathCommands() {
