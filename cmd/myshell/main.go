@@ -44,13 +44,25 @@ func executePwd(input string) {
 }
 
 func executeCd(input string) {
-	_, err := os.Stat(input)
+	var directory string
+	var err error
+
+	if input == "~" {
+		directory, err = os.UserHomeDir()
+		if err != nil {
+			log.Fatalf("error obtaining home directory")
+		}
+	} else {
+		directory = input
+	}
+
+	_, err = os.Stat(directory)
 	if err != nil {
-		fmt.Printf("cd: %s: No such file or directory\n", input)
+		fmt.Printf("cd: %s: No such file or directory\n", directory)
 		return
 	}
 
-	err = os.Chdir(input)
+	err = os.Chdir(directory)
 	if err != nil {
 		log.Fatalf("error changing directories")
 	}
