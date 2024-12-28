@@ -33,9 +33,9 @@ func executeType(input string) {
 }
 
 var COMMAND_MAPPINGS = map[string]func(string){
-	"exit 1": executeExit,
-	"echo":   executeEcho,
-	"type":   executeType,
+	"exit": executeExit,
+	"echo": executeEcho,
+	"type": executeType,
 }
 
 func main() {
