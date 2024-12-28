@@ -44,30 +44,31 @@ func initPathCommands() {
 	paths := strings.Split(pathString, ":")
 	for _, path := range paths {
 		file, err := os.Open(path)
-		validPath := true
 		if err != nil {
-			validPath = false
+			continue
 		}
 
-		if validPath {
-			commands, err := file.Readdirnames(0)
-			if err != nil {
-				log.Fatalf("error listing directory")
+		commands, err := file.Readdirnames(0)
+		if err != nil {
+			log.Fatalf("error listing directory")
+		}
+
+		fmt.Println("[DEBUG] - Commands:", commands)
+
+		for _, command := range commands {
+			if _, ok := COMMANDS[command]; ok {
+				continue
 			}
 
-			for _, command := range commands {
-				if _, ok := COMMANDS[command]; !ok {
-					COMMANDS[command] = path + "/" + command
-					COMMAND_MAPPINGS[command] = func(input string) {
-						cmd := exec.Command(path+"/"+command, strings.Split(input, " ")...)
-						out, err := cmd.CombinedOutput()
-						if err != nil {
-							fmt.Println(string(out))
-							log.Fatalf("error running command %v", err)
-						}
-						fmt.Println(string(out))
-					}
+			COMMANDS[command] = path + "/" + command
+			COMMAND_MAPPINGS[command] = func(input string) {
+				cmd := exec.Command(path+"/"+command, strings.Split(input, " ")...)
+				out, err := cmd.CombinedOutput()
+				if err != nil {
+					fmt.Println(string(out))
+					log.Fatalf("error running command %v", err)
 				}
+				fmt.Println(string(out))
 			}
 		}
 	}
