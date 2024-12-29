@@ -21,7 +21,7 @@ func processArguments(input string) []string {
 			}
 			isQuoted = !isQuoted
 			curr = ""
-		} else if r == ' ' && !isQuoted {
+		} else if r == ' ' && !isQuoted && curr != "" {
 			res = append(res, curr)
 			curr = ""
 		} else {
