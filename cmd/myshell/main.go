@@ -17,13 +17,11 @@ func processArguments(input string) []string {
 	for _, r := range input {
 		if r == '\'' {
 			if isQuoted {
-				curr = strings.Join(strings.Fields(strings.TrimSpace(curr)), " ")
 				res = append(res, curr)
 			}
 			isQuoted = !isQuoted
 			curr = ""
 		} else if r == ' ' && !isQuoted {
-			curr = strings.Join(strings.Fields(strings.TrimSpace(curr)), " ")
 			res = append(res, curr)
 			curr = ""
 		} else {
