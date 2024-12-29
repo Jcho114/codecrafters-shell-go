@@ -9,6 +9,29 @@ import (
 	"strings"
 )
 
+func processArguments(input string) []string {
+	res := []string{}
+
+	isQuoted := false
+	curr := ""
+	for _, r := range input {
+		if r == '\'' {
+			if isQuoted {
+				res = append(res, curr)
+			}
+			isQuoted = !isQuoted
+			curr = ""
+		} else if r == ' ' && !isQuoted {
+			res = append(res, curr)
+			curr = ""
+		} else {
+			curr += string(r)
+		}
+	}
+
+	return res
+}
+
 var COMMAND_DESCRIPTIONS = map[string]string{
 	"exit": "a shell builtin",
 	"echo": "a shell builtin",
@@ -97,7 +120,7 @@ func initPathCommands() {
 
 			COMMAND_DESCRIPTIONS[command] = path + "/" + command
 			COMMAND_FUNCTIONS[command] = func(input string) {
-				cmd := exec.Command(path+"/"+command, strings.Split(input, " ")...)
+				cmd := exec.Command(path+"/"+command, processArguments(input)...)
 				out, err := cmd.CombinedOutput()
 				if err != nil {
 					fmt.Println(string(out))
