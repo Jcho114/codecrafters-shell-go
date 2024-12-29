@@ -45,7 +45,7 @@ func executeExit(input string) {
 }
 
 func executeEcho(input string) {
-	message := input
+	message := strings.ReplaceAll(input, "'", "")
 	fmt.Println(message)
 }
 
