@@ -17,16 +17,22 @@ func processArguments(input string) []string {
 	for _, r := range input {
 		if r == '\'' {
 			if isQuoted {
+				curr = strings.Join(strings.Fields(strings.TrimSpace(curr)), " ")
 				res = append(res, curr)
 			}
 			isQuoted = !isQuoted
 			curr = ""
 		} else if r == ' ' && !isQuoted {
+			curr = strings.Join(strings.Fields(strings.TrimSpace(curr)), " ")
 			res = append(res, curr)
 			curr = ""
 		} else {
 			curr += string(r)
 		}
+	}
+
+	if len(curr) != 0 {
+		res = append(res, curr)
 	}
 
 	return res
@@ -131,8 +137,12 @@ func initPathCommands() {
 					fmt.Println(string(out))
 					log.Fatalf("error running command %v", err)
 				}
-				// removed \n at the end for tests to pass
-				fmt.Println(string(out[:len(out)-1]))
+				if len(out) == 0 {
+					fmt.Println(string(out))
+				} else {
+					// removed \n at the end for tests to pass
+					fmt.Println(string(out[:len(out)-1]))
+				}
 			}
 		}
 	}
