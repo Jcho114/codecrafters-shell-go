@@ -45,7 +45,12 @@ func executeExit(input string) {
 }
 
 func executeEcho(input string) {
-	message := strings.ReplaceAll(input, "'", "")
+	var message string
+	if strings.Contains(input, "'") {
+		message = strings.ReplaceAll(input, "'", "")
+	} else {
+		message = strings.Join(strings.Fields(strings.TrimSpace(input)), " ")
+	}
 	fmt.Println(message)
 }
 
