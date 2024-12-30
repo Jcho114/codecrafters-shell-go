@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-func processArguments(input string) []string {
+func processArguments(input string, includeWhiteSpace bool) []string {
 	res := []string{}
 
 	isSingleQuoted := false
@@ -26,7 +26,7 @@ func processArguments(input string) []string {
 				for index+1 < len(input) && input[index+1] == ' ' {
 					index += 1
 				}
-				if oldIndex < index {
+				if oldIndex < index && includeWhiteSpace {
 					res = append(res, " ")
 				}
 			}
@@ -43,7 +43,7 @@ func processArguments(input string) []string {
 				for index+1 < len(input) && input[index+1] == ' ' {
 					index += 1
 				}
-				if oldIndex < index {
+				if oldIndex < index && includeWhiteSpace {
 					res = append(res, " ")
 				}
 			}
@@ -87,7 +87,7 @@ func executeExit(input string) {
 }
 
 func executeEcho(input string) {
-	message := strings.Join(processArguments(input), "")
+	message := strings.Join(processArguments(input, true), "")
 	fmt.Println(message)
 }
 
@@ -162,7 +162,7 @@ func initPathCommands() {
 
 			COMMAND_DESCRIPTIONS[command] = path + "/" + command
 			COMMAND_FUNCTIONS[command] = func(input string) {
-				cmd := exec.Command(path+"/"+command, processArguments(input)...)
+				cmd := exec.Command(path+"/"+command, processArguments(input, false)...)
 				out, err := cmd.CombinedOutput()
 				if err != nil {
 					fmt.Println(string(out))
