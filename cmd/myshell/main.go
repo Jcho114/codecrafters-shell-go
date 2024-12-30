@@ -55,6 +55,9 @@ func processArguments(input string, includeWhiteSpace bool) []string {
 			for index+1 < len(input) && input[index+1] == ' ' {
 				index += 1
 			}
+			if includeWhiteSpace {
+				res = append(res, " ")
+			}
 			curr = ""
 		} else if r == '\\' {
 			curr += string(input[index : index+2])
