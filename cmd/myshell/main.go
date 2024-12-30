@@ -14,34 +14,34 @@ func processArguments(input string) []string {
 
 	isSingleQuoted := false
 	isDoubleQuoted := false
-	isEscaped := false
 	curr := ""
-	for _, r := range input {
-		if r == '\'' && !isDoubleQuoted && !isEscaped {
+	index := 0
+	for index < len(input) {
+		r := input[index]
+		if r == '\'' && !isDoubleQuoted {
 			if isSingleQuoted {
 				res = append(res, curr)
+				curr = ""
 			}
 			isSingleQuoted = !isSingleQuoted
-			curr = ""
-		} else if r == '"' && !isEscaped {
+		} else if r == '"' {
 			if isDoubleQuoted {
 				res = append(res, curr)
+				curr = ""
 			}
 			isDoubleQuoted = !isDoubleQuoted
-			curr = ""
-		} else if r == ' ' && !isSingleQuoted && !isDoubleQuoted && !isEscaped && strings.ReplaceAll(curr, " ", "") != "" {
+		} else if r == ' ' && !isSingleQuoted && !isDoubleQuoted && strings.ReplaceAll(curr, " ", "") != "" {
 			curr = strings.Join(strings.Fields(strings.TrimSpace(curr)), " ")
 			curr = strings.ReplaceAll(curr, `\`, "")
 			res = append(res, curr)
 			curr = ""
+		} else if r == '\\' {
+			curr += string(input[index : index+2])
+			index += 1
 		} else {
-			if r == '\\' && !isEscaped && !isSingleQuoted && !isDoubleQuoted {
-				isEscaped = true
-			} else if isEscaped {
-				isEscaped = false
-			}
 			curr += string(r)
 		}
+		index += 1
 	}
 
 	if len(curr) != 0 {
