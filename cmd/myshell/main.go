@@ -33,6 +33,7 @@ func processArguments(input string) []string {
 		} else if r == ' ' && !isSingleQuoted && !isDoubleQuoted && !isEscaped && curr != "" {
 			var err error
 			curr = strings.ReplaceAll(curr, `\ `, " ")
+			curr = strings.ReplaceAll(curr, `\'`, "'")
 			curr, err = strconv.Unquote("\"" + curr + "\"")
 			if err != nil {
 				log.Fatalf("error unquoting string")
@@ -52,6 +53,7 @@ func processArguments(input string) []string {
 	if len(curr) != 0 {
 		var err error
 		curr = strings.ReplaceAll(curr, `\ `, " ")
+		curr = strings.ReplaceAll(curr, `\'`, "'")
 		curr, err = strconv.Unquote("\"" + curr + "\"")
 		if err != nil {
 			log.Fatalf("error unquoting string")
