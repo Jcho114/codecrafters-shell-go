@@ -30,6 +30,8 @@ func processArguments(input string) []string {
 			isDoubleQuoted = !isDoubleQuoted
 			curr = ""
 		} else if r == ' ' && !isSingleQuoted && !isDoubleQuoted && !isEscaped && curr != "" {
+			curr = strings.Join(strings.Fields(strings.TrimSpace(curr)), " ")
+			curr = strings.ReplaceAll(curr, `\`, "")
 			res = append(res, curr)
 			curr = ""
 		} else {
@@ -37,14 +39,14 @@ func processArguments(input string) []string {
 				isEscaped = true
 			} else if isEscaped {
 				isEscaped = false
-				curr += string(r)
-			} else {
-				curr += string(r)
 			}
+			curr += string(r)
 		}
 	}
 
 	if len(curr) != 0 {
+		curr = strings.Join(strings.Fields(strings.TrimSpace(curr)), " ")
+		curr = strings.ReplaceAll(curr, `\`, "")
 		res = append(res, curr)
 	}
 
@@ -65,7 +67,6 @@ func executeExit(input string) {
 
 func executeEcho(input string) {
 	message := strings.Join(processArguments(input), " ")
-	message = strings.Join(strings.Fields(strings.TrimSpace(message)), " ")
 	fmt.Println(message)
 }
 
