@@ -77,7 +77,7 @@ func executeExit(input string) {
 }
 
 func executeEcho(input string) {
-	message := strings.Join(processArguments(input), "")
+	message := strings.Join(processArguments(input), " ")
 	fmt.Println(message)
 }
 
