@@ -15,15 +15,16 @@ func processArguments(input string) []string {
 
 	isSingleQuoted := false
 	isDoubleQuoted := false
+	isEscaped := false
 	curr := ""
 	for _, r := range input {
-		if r == '\'' && !isDoubleQuoted {
+		if r == '\'' && !isDoubleQuoted && !isEscaped {
 			if isSingleQuoted {
 				res = append(res, curr)
 			}
 			isSingleQuoted = !isSingleQuoted
 			curr = ""
-		} else if r == '"' {
+		} else if r == '"' && !isEscaped {
 			if isDoubleQuoted {
 				res = append(res, curr)
 			}
@@ -39,6 +40,11 @@ func processArguments(input string) []string {
 			res = append(res, curr)
 			curr = ""
 		} else {
+			if r == '\\' && !isEscaped {
+				isEscaped = true
+			} else if isEscaped {
+				isEscaped = false
+			}
 			curr += string(r)
 		}
 	}
@@ -63,17 +69,7 @@ func executeExit(input string) {
 }
 
 func executeEcho(input string) {
-	var message string
-	var err error
-	if strings.Contains(input, "'") || strings.Contains(input, "\"") {
-		message = strings.Join(processArguments(input), "")
-	} else {
-		message = strings.ReplaceAll(input, `\ `, " ")
-		message, err = strconv.Unquote("\"" + message + "\"")
-		if err != nil {
-			log.Fatalf("error unquoting string %v", err)
-		}
-	}
+	message := strings.Join(processArguments(input), "")
 	fmt.Println(message)
 }
 
