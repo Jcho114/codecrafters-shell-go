@@ -29,7 +29,7 @@ func processArguments(input string) []string {
 			}
 			isDoubleQuoted = !isDoubleQuoted
 			curr = ""
-		} else if r == ' ' && !isSingleQuoted && !isDoubleQuoted && !isEscaped && curr != "" && curr != " " {
+		} else if r == ' ' && !isSingleQuoted && !isDoubleQuoted && !isEscaped && strings.ReplaceAll(curr, " ", "") != "" {
 			curr = strings.Join(strings.Fields(strings.TrimSpace(curr)), " ")
 			curr = strings.ReplaceAll(curr, `\`, "")
 			res = append(res, curr)
