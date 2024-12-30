@@ -65,6 +65,7 @@ func executeExit(input string) {
 
 func executeEcho(input string) {
 	message := strings.Join(processArguments(input), " ")
+	message = strings.Join(strings.Fields(strings.TrimSpace(message)), " ")
 	fmt.Println(message)
 }
 
