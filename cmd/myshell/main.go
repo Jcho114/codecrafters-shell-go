@@ -22,18 +22,30 @@ func processArguments(input string) []string {
 			if isSingleQuoted {
 				res = append(res, curr)
 				curr = ""
+				index += 1
+				for index < len(input) && input[index] == ' ' {
+					index += 1
+				}
 			}
 			isSingleQuoted = !isSingleQuoted
 		} else if r == '"' {
 			if isDoubleQuoted {
 				res = append(res, curr)
 				curr = ""
+				index += 1
+				for index < len(input) && input[index] == ' ' {
+					index += 1
+				}
 			}
 			isDoubleQuoted = !isDoubleQuoted
-		} else if r == ' ' && !isSingleQuoted && !isDoubleQuoted && strings.ReplaceAll(curr, " ", "") != "" {
+		} else if r == ' ' && !isSingleQuoted && !isDoubleQuoted {
 			curr = strings.Join(strings.Fields(strings.TrimSpace(curr)), " ")
 			curr = strings.ReplaceAll(curr, `\`, "")
 			res = append(res, curr)
+			index += 1
+			for index < len(input) && input[index] == ' ' {
+				index += 1
+			}
 			curr = ""
 		} else if r == '\\' {
 			curr += string(input[index : index+2])
