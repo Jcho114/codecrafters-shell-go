@@ -22,18 +22,16 @@ func processArguments(input string) []string {
 			if isSingleQuoted {
 				res = append(res, curr)
 				curr = ""
-				index += 1
-				for index < len(input) && input[index] == ' ' {
+				for index+1 < len(input) && input[index+1] == ' ' {
 					index += 1
 				}
 			}
 			isSingleQuoted = !isSingleQuoted
-		} else if r == '"' {
+		} else if r == '"' && !isSingleQuoted {
 			if isDoubleQuoted {
 				res = append(res, curr)
 				curr = ""
-				index += 1
-				for index < len(input) && input[index] == ' ' {
+				for index+1 < len(input) && input[index+1] == ' ' {
 					index += 1
 				}
 			}
