@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"strconv"
 	"strings"
 )
 
@@ -29,6 +30,12 @@ func processArguments(input string) []string {
 			isDoubleQuoted = !isDoubleQuoted
 			curr = ""
 		} else if r == ' ' && !isSingleQuoted && !isDoubleQuoted && curr != "" {
+			var err error
+			curr = strings.ReplaceAll(curr, `\ `, " ")
+			curr, err = strconv.Unquote("\"" + curr + "\"")
+			if err != nil {
+				log.Fatalf("error unquoting string")
+			}
 			res = append(res, curr)
 			curr = ""
 		} else {
@@ -57,10 +64,15 @@ func executeExit(input string) {
 
 func executeEcho(input string) {
 	var message string
+	var err error
 	if strings.Contains(input, "'") || strings.Contains(input, "\"") {
 		message = strings.Join(processArguments(input), "")
 	} else {
-		message = strings.Join(strings.Fields(strings.TrimSpace(input)), " ")
+		message = strings.ReplaceAll(input, `\ `, " ")
+		message, err = strconv.Unquote("\"" + message + "\"")
+		if err != nil {
+			log.Fatalf("error unquoting string %v", err)
+		}
 	}
 	fmt.Println(message)
 }
