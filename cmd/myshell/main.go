@@ -33,7 +33,7 @@ func processArguments(input string) []string {
 			res = append(res, curr)
 			curr = ""
 		} else {
-			if r == '\\' && !isEscaped {
+			if r == '\\' && !isEscaped && !isSingleQuoted && !isDoubleQuoted {
 				isEscaped = true
 			} else if isEscaped {
 				isEscaped = false
