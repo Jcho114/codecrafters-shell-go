@@ -40,8 +40,7 @@ func processArguments(input string) []string {
 			curr = strings.Join(strings.Fields(strings.TrimSpace(curr)), " ")
 			curr = strings.ReplaceAll(curr, `\`, "")
 			res = append(res, curr)
-			index += 1
-			for index < len(input) && input[index] == ' ' {
+			for index+1 < len(input) && input[index+1] == ' ' {
 				index += 1
 			}
 			curr = ""
