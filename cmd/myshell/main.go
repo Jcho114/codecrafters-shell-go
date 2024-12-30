@@ -12,16 +12,23 @@ import (
 func processArguments(input string) []string {
 	res := []string{}
 
-	isQuoted := false
+	isSingleQuoted := false
+	isDoubleQuoted := false
 	curr := ""
 	for _, r := range input {
-		if r == '\'' {
-			if isQuoted {
+		if r == '\'' && !isDoubleQuoted {
+			if isSingleQuoted {
 				res = append(res, curr)
 			}
-			isQuoted = !isQuoted
+			isSingleQuoted = !isSingleQuoted
 			curr = ""
-		} else if r == ' ' && !isQuoted && curr != "" {
+		} else if r == '"' {
+			if isDoubleQuoted {
+				res = append(res, curr)
+			}
+			isDoubleQuoted = !isDoubleQuoted
+			curr = ""
+		} else if r == ' ' && !isSingleQuoted && !isDoubleQuoted && curr != "" {
 			res = append(res, curr)
 			curr = ""
 		} else {
@@ -50,8 +57,8 @@ func executeExit(input string) {
 
 func executeEcho(input string) {
 	var message string
-	if strings.Contains(input, "'") {
-		message = strings.ReplaceAll(input, "'", "")
+	if strings.Contains(input, "'") || strings.Contains(input, "\"") {
+		message = strings.Join(processArguments(input), "")
 	} else {
 		message = strings.Join(strings.Fields(strings.TrimSpace(input)), " ")
 	}
