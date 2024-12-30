@@ -22,17 +22,29 @@ func processArguments(input string) []string {
 			if isSingleQuoted {
 				res = append(res, curr)
 				curr = ""
+				oldIndex := index
 				for index+1 < len(input) && input[index+1] == ' ' {
 					index += 1
+				}
+				if oldIndex < index {
+					res = append(res, " ")
 				}
 			}
 			isSingleQuoted = !isSingleQuoted
 		} else if r == '"' && !isSingleQuoted {
 			if isDoubleQuoted {
+				curr = strings.ReplaceAll(curr, `\\`, `\`)
+				curr = strings.ReplaceAll(curr, `\$`, `$`)
+				curr = strings.ReplaceAll(curr, `\"`, `"`)
+				curr = strings.ReplaceAll(curr, `\\n`, `\n`)
 				res = append(res, curr)
 				curr = ""
+				oldIndex := index
 				for index+1 < len(input) && input[index+1] == ' ' {
 					index += 1
+				}
+				if oldIndex < index {
+					res = append(res, " ")
 				}
 			}
 			isDoubleQuoted = !isDoubleQuoted
@@ -75,7 +87,7 @@ func executeExit(input string) {
 }
 
 func executeEcho(input string) {
-	message := strings.Join(processArguments(input), " ")
+	message := strings.Join(processArguments(input), "")
 	fmt.Println(message)
 }
 
