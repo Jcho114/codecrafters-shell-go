@@ -179,6 +179,7 @@ func initPathCommands() {
 func main() {
 	initPathCommands()
 	originalStdout := os.Stdout
+	originalStderr := os.Stderr
 
 	for {
 		fmt.Fprint(os.Stdout, "$ ")
@@ -218,11 +219,22 @@ func main() {
 					log.Fatalf("error opening file")
 				}
 				os.Stdout = file
+			} else if strings.Contains(input, "2>") {
+				var filename string
+				index := strings.Index(input, "2>")
+				filename = input[index+3:]
+				input = input[:index-1]
+				file, err = os.Create(filename)
+				if err != nil {
+					log.Fatalf("error opening file")
+				}
+				os.Stderr = file
 			}
 			handler := COMMAND_FUNCTIONS[command]
 			handler(input)
 			file.Close()
 			os.Stdout = originalStdout
+			os.Stderr = originalStderr
 		} else {
 			fmt.Printf("%s: command not found\n", input)
 		}
