@@ -168,10 +168,10 @@ func initPathCommands() {
 				cmd := exec.Command(path+"/"+command, processArguments(input, false)...)
 				out, err := cmd.CombinedOutput()
 				if err != nil {
+					fmt.Fprintln(os.Stderr, string(out[:len(out)-1]))
 					// fmt.Println(string(out))
 					// log.Fatalf("error running command %v", err)
-				}
-				if len(out) == 0 {
+				} else if len(out) == 0 {
 					fmt.Println(string(out))
 				} else {
 					// removed \n at the end for tests to pass
