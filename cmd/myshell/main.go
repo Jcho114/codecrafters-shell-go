@@ -165,7 +165,7 @@ func initPathCommands() {
 
 			COMMAND_DESCRIPTIONS[command] = path + "/" + command
 			COMMAND_FUNCTIONS[command] = func(input string) {
-				cmd := exec.Command(path+"/"+command, processArguments(input, false)...)
+				cmd := exec.Command(path+"/"+processArguments(command, false)[0], processArguments(input, false)...)
 				out, err := cmd.CombinedOutput()
 				if err != nil {
 					fmt.Println(string(out))
