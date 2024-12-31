@@ -230,6 +230,21 @@ func main() {
 				}
 
 				os.Stdout = file
+			} else if strings.Contains(input, "2>>") {
+				index := strings.Index(input, "2>>")
+				filename := input[index+4:]
+				if index > 0 {
+					input = input[:index-1]
+				} else {
+					input = ""
+				}
+
+				file, err := os.OpenFile(filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+				if err != nil {
+					log.Fatalf("error opening file")
+				}
+
+				os.Stderr = file
 			} else if strings.Contains(input, "2>") {
 				index := strings.Index(input, "2>")
 				filename := input[index+3:]
