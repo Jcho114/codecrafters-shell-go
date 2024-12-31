@@ -227,8 +227,8 @@ func main() {
 			}
 			handler := COMMAND_FUNCTIONS[command]
 			handler(input)
-			os.Stdout = originalStdout
 			file.Close()
+			os.Stdout = originalStdout
 		} else {
 			fmt.Printf("%s: command not found\n", input)
 		}
