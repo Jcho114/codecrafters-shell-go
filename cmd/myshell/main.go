@@ -169,7 +169,7 @@ func initPathCommands() {
 				out, err := cmd.CombinedOutput()
 				if err != nil {
 					fmt.Println(string(out))
-					log.Fatalf("error running command %v", err)
+					// log.Fatalf("error running command %v", err)
 				}
 				if len(out) == 0 {
 					fmt.Println(string(out))
