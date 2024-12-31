@@ -204,7 +204,22 @@ func main() {
 
 			var file *os.File
 			var err error
-			if strings.Contains(input, ">>") || strings.Contains(input, "1>>") {
+			if strings.Contains(input, "2>>") {
+				index := strings.Index(input, "2>>")
+				filename := input[index+4:]
+				if index > 0 {
+					input = input[:index-1]
+				} else {
+					input = ""
+				}
+
+				file, err := os.OpenFile(filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+				if err != nil {
+					log.Fatalf("error opening file")
+				}
+
+				os.Stderr = file
+			} else if strings.Contains(input, ">>") || strings.Contains(input, "1>>") {
 				var filename string
 				if strings.Contains(input, "1>>") {
 					index := strings.Index(input, "1>>")
@@ -230,21 +245,6 @@ func main() {
 				}
 
 				os.Stdout = file
-			} else if strings.Contains(input, "2>>") {
-				index := strings.Index(input, "2>>")
-				filename := input[index+4:]
-				if index > 0 {
-					input = input[:index-1]
-				} else {
-					input = ""
-				}
-
-				file, err := os.OpenFile(filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-				if err != nil {
-					log.Fatalf("error opening file")
-				}
-
-				os.Stderr = file
 			} else if strings.Contains(input, "2>") {
 				index := strings.Index(input, "2>")
 				filename := input[index+3:]
