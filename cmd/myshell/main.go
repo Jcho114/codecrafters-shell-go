@@ -165,7 +165,7 @@ func initPathCommands() {
 
 			COMMAND_DESCRIPTIONS[command] = path + "/" + command
 			COMMAND_FUNCTIONS[command] = func(input string) {
-				cmd := exec.Command(path+"/"+processArguments(command, false)[0], processArguments(input, false)...)
+				cmd := exec.Command(path+"/"+command, processArguments(input, false)...)
 				out, err := cmd.CombinedOutput()
 				if err != nil {
 					fmt.Println(string(out))
@@ -194,7 +194,7 @@ func main() {
 		}
 
 		input = input[:len(input)-1]
-		command := strings.Split(input, " ")[0]
+		command := processArguments(input, false)[0]
 
 		// Hack for passing the tests since the test executable is made after program start
 		initPathCommands()
