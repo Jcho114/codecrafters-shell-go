@@ -166,14 +166,10 @@ func initPathCommands() {
 			COMMAND_DESCRIPTIONS[command] = path + "/" + command
 			COMMAND_FUNCTIONS[command] = func(input string) {
 				cmd := exec.Command(path+"/"+command, processArguments(input, false)...)
-				out, err := cmd.CombinedOutput()
+				cmd.Stderr = os.Stderr
+				cmd.Stdout = os.Stdout
+				err := cmd.Run()
 				if err != nil {
-					fmt.Fprintln(os.Stderr, string(out[:len(out)-1]))
-				} else if len(out) == 0 {
-					fmt.Println(string(out))
-				} else {
-					// removed \n at the end for tests to pass
-					fmt.Println(string(out[:len(out)-1]))
 				}
 			}
 		}
